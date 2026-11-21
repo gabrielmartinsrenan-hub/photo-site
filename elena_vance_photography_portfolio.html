@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elena Vance | Fine Art & Editorial Photography</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Cormorant Garamond (Editorial Serif) & Inter (Clean Sans) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for subtle editorial icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind Custom Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    },
+                    colors: {
+                        obsidian: '#0D0D0D',
+                        charcoal: '#161616',
+                        stone: '#F5F4F0',
+                        alabaster: '#FAF9F6',
+                        champagne: '#C5B396',
+                        muted: '#787570'
+                    },
+                    letterSpacing: {
+                        widest: '.22em',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Editorial Scrollbar & Smooth Transitions */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0D0D0D;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333333;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #C5B396;
+        }
+
+        /* Subtle Image Zoom & Fade Animations */
+        .gallery-card img {
+            transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+        }
+        .gallery-card:hover img {
+            transform: scale(1.04);
+        }
+
+        /* Masonry Grid Layout */
+        .masonry-grid {
+            column-count: 1;
+            column-gap: 1.5rem;
+        }
+        @media (min-width: 640px) {
+            .masonry-grid {
+                column-count: 2;
+            }
+        }
+        @media (min-width: 1024px) {
+            .masonry-grid {
+                column-count: 3;
+            }
+        }
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Fade in animation for filtered items */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-reveal {
+            animation: fadeInScale 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Custom Date Input Styling for Dark Theme */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.8);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-alabaster text-obsidian font-sans antialiased selection:bg-champagne selection:text-obsidian">
+
+    <!-- ==================== 1. STICKY MINIMAL NAVIGATION ==================== -->
+    <header id="navbar" class="fixed top-0 left-0 right-0 z-40 transition-all duration-500 py-5 px-6 md:px-12 text-white">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Brand Monogram / Wordmark -->
+            <a href="#home" class="group flex flex-col">
+                <span class="font-serif text-2xl md:text-3xl tracking-wider font-medium uppercase">Elena Vance</span>
+                <span class="text-[10px] tracking-widest uppercase opacity-70 group-hover:text-champagne transition-colors">Visual Anthology</span>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center space-x-10 text-xs uppercase tracking-widest font-medium">
+                <a href="#portfolio" class="hover:text-champagne transition-colors py-1">Portfolio</a>
+                <a href="#about" class="hover:text-champagne transition-colors py-1">About</a>
+                <a href="#services" class="hover:text-champagne transition-colors py-1">Services</a>
+                <a href="#contact" class="hover:text-champagne transition-colors py-1">Contact</a>
+                <a href="#contact" data-preselect="Editorial & Commercial" class="book-trigger px-5 py-2.5 border border-white/40 rounded-full hover:bg-white hover:text-obsidian transition-all duration-300">
+                    Book a Session
+                </a>
+            </nav>
+
+            <!-- Mobile Menu Hamburger Button -->
+            <button id="mobile-menu-btn" aria-label="Toggle Menu" class="md:hidden p-2 text-current focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path id="menu-icon-open" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 7h16M4 17h16"/>
+                    <path id="menu-icon-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Full-Screen Mobile Drawer -->
+        <div id="mobile-menu" class="fixed inset-0 bg-obsidian text-white z-30 flex flex-col justify-center items-center space-y-8 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden">
+            <a href="#portfolio" class="mobile-link font-serif text-4xl hover:text-champagne transition-colors">Portfolio</a>
+            <a href="#about" class="mobile-link font-serif text-4xl hover:text-champagne transition-colors">About</a>
+            <a href="#services" class="mobile-link font-serif text-4xl hover:text-champagne transition-colors">Services</a>
+            <a href="#contact" class="mobile-link font-serif text-4xl hover:text-champagne transition-colors">Contact</a>
+            <a href="#contact" class="mobile-link mt-4 px-8 py-3.5 bg-champagne text-obsidian text-xs uppercase tracking-widest font-semibold rounded-full">
+                Book a Session
+            </a>
+        </div>
+    </header>
+
+    <!-- ==================== 2. FULL-BLEED EDITORIAL HERO ==================== -->
+    <section id="home" class="relative h-screen min-h-[640px] w-full bg-obsidian text-white flex items-center justify-center overflow-hidden">
+        <!-- Hero Background Image with Dark Editorial Vignette -->
+        <div class="absolute inset-0 z-0">
+            <img 
+                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=2200&q=85" 
+                onerror="this.src='https://placehold.co/1920x1080/111111/C5B396?text=Elena+Vance+Editorial'"
+                alt="Dramatic editorial portrait in natural shadow" 
+                class="w-full h-full object-cover object-center scale-105 animate-[pulse_20s_ease-in-out_infinite] brightness-75 contrast-110"
+            >
+            <div class="absolute inset-0 bg-gradient-to-b from-obsidian/60 via-obsidian/30 to-obsidian/85"></div>
+        </div>
+
+        <!-- Hero Content -->
+        <div class="relative z-10 max-w-5xl mx-auto px-6 text-center mt-12">
+            <p class="text-xs md:text-sm uppercase tracking-widest text-champagne mb-5 font-medium">
+                New York &bull; Paris &bull; Worldwide
+            </p>
+            <h1 class="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-normal leading-[1.08] tracking-tight mb-6">
+                Quiet Poetry in <br><span class="italic font-light text-stone/90">Light &amp; Shadow</span>
+            </h1>
+            <p class="max-w-xl mx-auto text-sm md:text-base text-stone/80 font-light leading-relaxed mb-10">
+                Fine art portraiture, architectural stillness, and emotive editorial storytelling crafted on medium format digital and 120 film.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#portfolio" class="w-full sm:w-auto px-8 py-3.5 bg-white text-obsidian text-xs uppercase tracking-widest font-medium rounded-full hover:bg-champagne transition-colors duration-300">
+                    Explore Selected Works
+                </a>
+                <a href="#contact" class="w-full sm:w-auto px-8 py-3.5 border border-white/35 text-white text-xs uppercase tracking-widest font-medium rounded-full hover:border-white transition-colors duration-300">
+                    Inquire for Commissions
+                </a>
+            </div>
+        </div>
+
+        <!-- Subtle Animated Scroll Indicator -->
+        <a href="#portfolio" aria-label="Scroll to Portfolio" class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-white/60 hover:text-champagne transition-colors">
+            <span class="text-[10px] uppercase tracking-widest">Scroll</span>
+            <div class="w-[1px] h-10 bg-white/25 overflow-hidden relative">
+                <div class="w-full h-1/2 bg-champagne animate-bounce"></div>
+            </div>
+        </a>
+    </section>
+
+    <!-- ==================== 3. FILTERABLE PORTFOLIO GALLERY ==================== -->
+    <section id="portfolio" class="py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
+        <!-- Section Header & Filter Tabs -->
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-14 gap-8">
+            <div>
+                <span class="text-xs uppercase tracking-widest text-muted block mb-3">01 / Selected Archive</span>
+                <h2 class="font-serif text-4xl md:text-5xl text-obsidian font-normal">Curated Works</h2>
+            </div>
+
+            <!-- Interactive Category Filters -->
+            <div id="filter-buttons" class="flex flex-wrap gap-2 sm:gap-3" role="tablist" aria-label="Portfolio Categories">
+                <button data-filter="all" class="filter-btn active px-5 py-2.5 rounded-full text-xs uppercase tracking-widest transition-all duration-300 bg-obsidian text-white">
+                    All Works
+                </button>
+                <button data-filter="Portraits" class="filter-btn px-5 py-2.5 rounded-full text-xs uppercase tracking-widest transition-all duration-300 bg-stone text-obsidian hover:bg-obsidian/10">
+                    Portraits
+                </button>
+                <button data-filter="Editorial" class="filter-btn px-5 py-2.5 rounded-full text-xs uppercase tracking-widest transition-all duration-300 bg-stone text-obsidian hover:bg-obsidian/10">
+                    Editorial
+                </button>
+                <button data-filter="Landscapes" class="filter-btn px-5 py-2.5 rounded-full text-xs uppercase tracking-widest transition-all duration-300 bg-stone text-obsidian hover:bg-obsidian/10">
+                    Landscapes
+                </button>
+                <button data-filter="Events" class="filter-btn px-5 py-2.5 rounded-full text-xs uppercase tracking-widest transition-all duration-300 bg-stone text-obsidian hover:bg-obsidian/10">
+                    Events
+                </button>
+            </div>
+        </div>
+
+        <!-- Masonry Photo Grid (Populated via JS for seamless filtering & Lightbox syncing) -->
+        <div id="gallery-grid" class="masonry-grid">
+            <!-- Gallery cards injected dynamically -->
+        </div>
+    </section>
+
+    <!-- ==================== 4. ABOUT THE PHOTOGRAPHER ==================== -->
+    <section id="about" class="py-24 md:py-32 bg-obsidian text-stone px-6 md:px-12">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            
+            <!-- Photographer Portrait -->
+            <div class="lg:col-span-5 relative">
+                <div class="aspect-[4/5] rounded-2xl overflow-hidden bg-charcoal shadow-2xl">
+                    <img 
+                        src="https://images.unsplash.com/photo-1554048612-b6a482bc67e5?auto=format&fit=crop&w=1000&q=85" 
+                        onerror="this.src='https://placehold.co/800x1000/161616/C5B396?text=Elena+Vance'"
+                        alt="Elena Vance holding a camera in her studio" 
+                        class="w-full h-full object-cover grayscale contrast-110 hover:grayscale-0 transition-all duration-700"
+                    >
+                </div>
+                <!-- Subtle Caption Badge -->
+                <div class="mt-4 flex items-center justify-between text-xs text-muted tracking-wider uppercase">
+                    <span>Elena Vance &mdash; Principal Photographer</span>
+                    <span>Est. 2016</span>
+                </div>
+            </div>
+
+            <!-- Bio, Philosophy & Camera Kit -->
+            <div class="lg:col-span-7 space-y-8">
+                <div>
+                    <span class="text-xs uppercase tracking-widest text-champagne block mb-3">02 / The Artist</span>
+                    <h2 class="font-serif text-4xl md:text-5xl text-white font-normal leading-tight">
+                        Observing the unscripted stillness between moments.
+                    </h2>
+                </div>
+
+                <div class="space-y-5 text-stone/80 font-light leading-relaxed text-base">
+                    <p>
+                        Based between New York’s Hudson Valley and Paris, Elena Vance approaches photography as a tactile study of human presence and natural light. With a background in art history and analog darkroom printing, her imagery favors deliberate pacing over fleeting trends.
+                    </p>
+                    <p>
+                        Whether documenting an intimate wedding on the Amalfi Coast, photographing an architectural monograph, or crafting editorial portraits for independent fashion houses, every frame is composed with restraint, tonal depth, and emotional honesty.
+                    </p>
+                </div>
+
+                <!-- Philosophy & Gear Highlights Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-white/10">
+                    <div class="p-5 rounded-xl bg-charcoal/80 border border-white/5">
+                        <div class="flex items-center gap-3 text-champagne mb-2">
+                            <i class="fa-solid fa-camera-retro text-sm"></i>
+                            <h3 class="text-xs uppercase tracking-widest font-semibold text-white">Primary Mediums</h3>
+                        </div>
+                        <p class="text-sm text-stone/70 font-light leading-relaxed">
+                            Hasselblad X2D 100C, Leica M11 Monochrom, and Contax 645 Medium Format Film (Kodak Portra 400 &amp; Ilford HP5).
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-xl bg-charcoal/80 border border-white/5">
+                        <div class="flex items-center gap-3 text-champagne mb-2">
+                            <i class="fa-solid fa-award text-sm"></i>
+                            <h3 class="text-xs uppercase tracking-widest font-semibold text-white">Selected Recognition</h3>
+                        </div>
+                        <p class="text-sm text-stone/70 font-light leading-relaxed">
+                            Featured in <em>Kinfolk</em>, <em>Cereal Magazine</em>, <em>Architectural Digest</em>, and PDN 30 Emerging Photographers.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Editorial Signature -->
+                <div class="pt-2">
+                    <p class="font-serif italic text-3xl text-champagne">Elena Vance</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 5. SERVICES & PACKAGES ==================== -->
+    <section id="services" class="py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
+        <div class="max-w-2xl mb-16">
+            <span class="text-xs uppercase tracking-widest text-muted block mb-3">03 / Commissions &amp; Investment</span>
+            <h2 class="font-serif text-4xl md:text-5xl text-obsidian font-normal mb-4">Tailored Visual Offerings</h2>
+            <p class="text-muted font-light text-base leading-relaxed">
+                Each commission includes pre-production creative direction, custom color grading, and archival high-resolution delivery. Bespoke multi-day travel packages are available upon request.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Package 1: Portrait Sessions -->
+            <div class="flex flex-col justify-between p-8 md:p-10 rounded-2xl bg-stone/70 border border-obsidian/10 hover:border-obsidian/30 transition-all duration-300">
+                <div>
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-xs uppercase tracking-widest text-muted">Collection I</span>
+                        <span class="font-serif text-2xl text-obsidian">$950</span>
+                    </div>
+                    <h3 class="font-serif text-3xl text-obsidian mb-3">Portrait Sessions</h3>
+                    <p class="text-sm text-muted font-light leading-relaxed mb-8">
+                        Intimate artist portraits, personal branding, or family heirlooms captured in natural studio light or on location.
+                    </p>
+                    <ul class="space-y-3.5 text-sm text-obsidian/85 mb-10 border-t border-obsidian/10 pt-6">
+                        <li class="flex items-start gap-3">
+                            <span class="text-champagne font-bold">&mdash;</span>
+                            <span>Up to 2 hours on location or daylight studio</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-champagne font-bold">&mdash;</span>
+                            <span>45+ high-resolution hand-retouched images</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-champagne font-bold">&mdash;</span>
+                            <span>2 wardrobe &amp; moodboard styling changes</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-champagne font-bold">&mdash;</span>
+                            <span>Private online gallery &amp; print release</span>
+                        </li>
+                    </ul>
+                </div>
+                <a href="#contact" data-preselect="Portrait Session ($950)" class="book-trigger w-full py-3.5 text-center rounded-full border border-obsidian text-obsidian text-xs uppercase tracking-widest font-medium hover:bg-obsidian hover:text-white transition-colors">
+                    Reserve Portrait Session
+                </a>
+            </div>
+
+            <!-- Package 2: Commercial & Editorial (Featured) -->
+            <div class="flex flex-col justify-between p-8 md:p-10 rounded-2xl bg-obsidian text-white shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 px-4 py-1.5 bg-champagne text-obsidian text-[10px] uppercase tracking-widest font-semibold rounded-bl-xl">
+                    Most Requested
+                </div>
+                <div>
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-xs uppercase tracking-widest text-champagne">Collection II</span>
+                        <span class="font-serif text-2xl text-white">$2,800</span>
+                    </div>
+                    <h3 class="font-serif text-3xl text-white mb-3">Commercial &amp; Editorial</h3>
+                    <p class="text-sm text-stone/70 font-light leading-relaxed mb-8">
+                        Cohesive campaign narratives for fashion labels, hospitality spaces, artisans, and architectural publications.
+                    </p>
+                    <ul class="space-y-3.5 text-sm text-stone/90 mb-10 border-t border-white/15 pt-6">
+                        <li class="flex items-start gap-3">
+                            <span class="text-champagne font-bold">&mdash;</span>
+                            <span>Full-day production (up to 8 hours)</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-champagne font-bold">&mdash;</span>
+                            <span>Creative direction, casting &amp; lighting kit</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-champagne font-bold">&mdash;</span>
+                            <span>80+ commercial-licensed master files</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-champagne font-bold">&mdash;</span>
+                            <span>Medium format digital + 3 rolls of 120 film</span>
+                        </li>
+                    </ul>
+                </div>
+                <a href="#contact" data-preselect="Commercial & Editorial ($2,800)" class="book-trigger w-full py-3.5 text-center rounded-full bg-champagne text-obsidian text-xs uppercase tracking-widest font-semibold hover:bg-white transition-colors">
+                    Commission Campaign
+                </a>
+            </div>
+
+            <!-- Package 3: Events & Weddings -->
+            <div class="flex flex-col justify-between p-8 md:p-10 rounded-2xl bg-stone/70 border border-obsidian/10 hover:border-obsidian/30 transition-all duration-300">
+                <div>
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-xs uppercase tracking-widest text-muted">Collection III</span>
+                        <span class="font-serif text-2xl text-obsidian">$4,600</span>
+                    </div>
+                    <h3 class="font-serif text-3xl text-obsidian mb-3">Events &amp; Weddings</h3>
+                    <p class="text-sm text-muted font-light leading-relaxed mb-8">
+                        Documentary storytelling for refined weddings, gallery openings, and private cultural gatherings worldwide.
+                    </p>
+                    <ul class="space-y-3.5 text-sm text-obsidian/85 mb-10 border-t border-obsidian/10 pt-6">
+                        <li class="flex items-start gap-3">
+                            <span class="text-champagne font-bold">&mdash;</span>
+                            <span>Up to 10 hours of continuous coverage</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-champagne font-bold">&mdash;</span>
+                            <span>Second fine-art photographer included</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-champagne font-bold">&mdash;</span>
+                            <span>500+ curated archival high-res photographs</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-champagne font-bold">&mdash;</span>
+                            <span>48-hour editorial preview gallery (30 frames)</span>
+                        </li>
+                    </ul>
+                </div>
+                <a href="#contact" data-preselect="Events & Weddings ($4,600)" class="book-trigger w-full py-3.5 text-center rounded-full border border-obsidian text-obsidian text-xs uppercase tracking-widest font-medium hover:bg-obsidian hover:text-white transition-colors">
+                    Inquire Date Availability
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 6. BOOKING & CONTACT SECTION ==================== -->
+    <section id="contact" class="py-24 md:py-32 bg-charcoal text-white px-6 md:px-12">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-14">
+            
+            <!-- Left Column: Studio Info & Direct Details -->
+            <div class="lg:col-span-5 flex flex-col justify-between space-y-10">
+                <div>
+                    <span class="text-xs uppercase tracking-widest text-champagne block mb-3">04 / Inquire &amp; Reserve</span>
+                    <h2 class="font-serif text-4xl md:text-5xl font-normal leading-tight mb-6">
+                        Let’s create something enduring.
+                    </h2>
+                    <p class="text-stone/75 font-light leading-relaxed text-sm md:text-base">
+                        Currently accepting commissions for late 2026 and 2027. Share the vision, location, and desired dates for your project, and our studio will respond within 24 business hours.
+                    </p>
+                </div>
+
+                <div class="space-y-6 border-t border-white/10 pt-8 text-sm">
+                    <div>
+                        <p class="text-xs uppercase tracking-widest text-muted mb-1">Daylight Studio</p>
+                        <p class="text-stone">458 Broome Street, Suite 4B, SoHo, New York, NY 10013</p>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-widest text-muted mb-1">Direct Representation</p>
+                        <p class="text-stone">studio@elenavance.com &bull; +1 (212) 555-0194</p>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-widest text-muted mb-3">Social Journals</p>
+                        <div class="flex items-center space-x-5 text-stone/80">
+                            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="hover:text-champagne transition-colors text-lg">
+                                <i class="fa-brands fa-instagram"></i>
+                            </a>
+                            <a href="https://behance.net" target="_blank" rel="noopener noreferrer" aria-label="Behance" class="hover:text-champagne transition-colors text-lg">
+                                <i class="fa-brands fa-behance"></i>
+                            </a>
+                            <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" aria-label="Pinterest" class="hover:text-champagne transition-colors text-lg">
+                                <i class="fa-brands fa-pinterest-p"></i>
+                            </a>
+                            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="hover:text-champagne transition-colors text-lg">
+                                <i class="fa-brands fa-linkedin-in"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Interactive Booking Form & Instant Confirmation -->
+            <div class="lg:col-span-7 bg-obsidian p-8 md:p-12 rounded-2xl border border-white/10 shadow-2xl">
+                <!-- Inquiry Form -->
+                <form id="booking-form" class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label for="client-name" class="block text-xs uppercase tracking-widest text-stone/70 mb-2">Full Name *</label>
+                            <input type="text" id="client-name" name="name" required placeholder="Camille Laurent"
+                                class="w-full px-4 py-3.5 rounded-xl bg-charcoal border border-white/15 text-white placeholder-white/30 text-sm focus:outline-none focus:border-champagne transition-colors">
+                        </div>
+                        <div>
+                            <label for="client-email" class="block text-xs uppercase tracking-widest text-stone/70 mb-2">Email Address *</label>
+                            <input type="email" id="client-email" name="email" required placeholder="camille@atelier.com"
+                                class="w-full px-4 py-3.5 rounded-xl bg-charcoal border border-white/15 text-white placeholder-white/30 text-sm focus:outline-none focus:border-champagne transition-colors">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label for="service-select" class="block text-xs uppercase tracking-widest text-stone/70 mb-2">Commission Type *</label>
+                            <select id="service-select" name="service" required
+                                class="w-full px-4 py-3.5 rounded-xl bg-charcoal border border-white/15 text-white text-sm focus:outline-none focus:border-champagne transition-colors">
+                                <option value="Portrait Session ($950)">Portrait Session ($950)</option>
+                                <option value="Commercial & Editorial ($2,800)" selected>Commercial &amp; Editorial ($2,800)</option>
+                                <option value="Events & Weddings ($4,600)">Events &amp; Weddings ($4,600)</option>
+                                <option value="Custom Travel / Fine Art Commission">Custom Travel / Fine Art Commission</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="session-date" class="block text-xs uppercase tracking-widest text-stone/70 mb-2">Preferred Date *</label>
+                            <input type="date" id="session-date" name="date" required
+                                class="w-full px-4 py-3.5 rounded-xl bg-charcoal border border-white/15 text-white text-sm focus:outline-none focus:border-champagne transition-colors">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="project-location" class="block text-xs uppercase tracking-widest text-stone/70 mb-2">Location / City</label>
+                        <input type="text" id="project-location" name="location" placeholder="e.g., New York Studio, Paris, Lake Como"
+                            class="w-full px-4 py-3.5 rounded-xl bg-charcoal border border-white/15 text-white placeholder-white/30 text-sm focus:outline-none focus:border-champagne transition-colors">
+                    </div>
+
+                    <div>
+                        <label for="project-message" class="block text-xs uppercase tracking-widest text-stone/70 mb-2">Project Notes &amp; Vision *</label>
+                        <textarea id="project-message" name="message" rows="4" required placeholder="Tell us about the creative direction, mood, or event schedule..."
+                            class="w-full px-4 py-3.5 rounded-xl bg-charcoal border border-white/15 text-white placeholder-white/30 text-sm focus:outline-none focus:border-champagne transition-colors resize-none"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full py-4 bg-champagne text-obsidian text-xs uppercase tracking-widest font-semibold rounded-full hover:bg-white transition-all duration-300 shadow-lg">
+                        Send Commission Inquiry
+                    </button>
+                </form>
+
+                <!-- Instant Confirmation State (Hidden until submitted) -->
+                <div id="booking-confirmation" class="hidden py-10 text-center space-y-6 animate-reveal">
+                    <div class="w-16 h-16 rounded-full bg-champagne/20 text-champagne flex items-center justify-center mx-auto text-2xl">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <h3 class="font-serif text-3xl text-white">Inquiry Received</h3>
+                    <p id="confirmation-summary" class="text-sm text-stone/80 font-light max-w-md mx-auto leading-relaxed">
+                        Thank you. Your commission details have been logged with Elena Vance Studio.
+                    </p>
+                    <div class="pt-4">
+                        <button id="reset-booking-btn" type="button" class="px-6 py-2.5 border border-white/25 rounded-full text-xs uppercase tracking-widest text-white hover:border-champagne hover:text-champagne transition-colors">
+                            Submit Another Inquiry
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-obsidian text-muted py-10 px-6 md:px-12 border-t border-white/10 text-xs">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>&copy; 2026 Elena Vance Photography. All Rights Reserved.</p>
+            <div class="flex items-center space-x-6 uppercase tracking-widest text-[11px]">
+                <a href="#home" class="hover:text-white transition-colors">Back to Top &uarr;</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== FULL-SCREEN INTERACTIVE LIGHTBOX MODAL ==================== -->
+    <div id="lightbox-modal" role="dialog" aria-modal="true" aria-label="Image Lightbox" class="fixed inset-0 z-50 bg-obsidian/95 backdrop-blur-md hidden flex-col justify-between p-4 sm:p-8 text-white opacity-0 transition-opacity duration-300">
+        
+        <!-- Lightbox Top Bar -->
+        <div class="flex items-center justify-between max-w-7xl w-full mx-auto z-10">
+            <span id="lightbox-counter" class="text-xs uppercase tracking-widest text-stone/70 font-mono">01 / 09</span>
+            <button id="lightbox-close" aria-label="Close Lightbox" class="p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Lightbox Main Image & Navigation Arrows -->
+        <div class="relative flex-1 flex items-center justify-center my-4 overflow-hidden">
+            <!-- Previous Button -->
+            <button id="lightbox-prev" aria-label="Previous Photograph" class="absolute left-2 sm:left-6 z-20 p-3.5 rounded-full bg-obsidian/70 border border-white/15 hover:bg-champagne hover:text-obsidian transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+
+            <!-- Featured Image Container -->
+            <div class="max-h-[72vh] max-w-5xl flex items-center justify-center px-12 sm:px-20">
+                <img id="lightbox-img" src="" alt="" class="max-h-[72vh] max-w-full object-contain rounded-lg shadow-2xl transition-opacity duration-300">
+            </div>
+
+            <!-- Next Button -->
+            <button id="lightbox-next" aria-label="Next Photograph" class="absolute right-2 sm:right-6 z-20 p-3.5 rounded-full bg-obsidian/70 border border-white/15 hover:bg-champagne hover:text-obsidian transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Lightbox Bottom Caption & EXIF Metadata Bar -->
+        <div class="max-w-5xl w-full mx-auto border-t border-white/15 pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+                <span id="lightbox-category" class="text-[10px] uppercase tracking-widest text-champagne block mb-0.5">Category</span>
+                <h3 id="lightbox-title" class="font-serif text-2xl text-white">Photograph Title</h3>
+            </div>
+            <div class="flex flex-wrap items-center gap-4 text-xs text-stone/70 font-mono bg-white/5 px-4 py-2.5 rounded-xl border border-white/10">
+                <span id="lightbox-camera"><i class="fa-solid fa-camera mr-1.5 text-champagne"></i>Camera</span>
+                <span class="text-white/20">|</span>
+                <span id="lightbox-exif">50mm &bull; f/1.4 &bull; 1/500s &bull; ISO 100</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. CURATED PHOTOGRAPHY ARCHIVE WITH EXIF METADATA
+            const portfolioItems = [
+                {
+                    id: 1,
+                    title: "Solitude in Chiaroscuro",
+                    category: "Portraits",
+                    location: "Paris, France",
+                    url: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=1200&q=85",
+                    camera: "Hasselblad X2D 100C",
+                    exif: "80mm f/1.9 • 1/320s • ISO 64"
+                },
+                {
+                    id: 2,
+                    title: "Autumn Silhouette Study IV",
+                    category: "Editorial",
+                    location: "Milan, Italy",
+                    url: "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1200&q=85",
+                    camera: "Contax 645 • Portra 400",
+                    exif: "80mm f/2.0 • 1/500s • ISO 400"
+                },
+                {
+                    id: 3,
+                    title: "First Light Over Skógafoss",
+                    category: "Landscapes",
+                    location: "Southern Highlands, Iceland",
+                    url: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=1200&q=85",
+                    camera: "Hasselblad X2D 100C",
+                    exif: "28mm f/8.0 • 1/15s • ISO 64"
+                },
+                {
+                    id: 4,
+                    title: "Vows Beneath Olive Trees",
+                    category: "Events",
+                    location: "Ravello, Amalfi Coast",
+                    url: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=85",
+                    camera: "Leica M11",
+                    exif: "35mm f/1.4 • 1/1000s • ISO 100"
+                },
+                {
+                    id: 5,
+                    title: "Monochrome Gaze",
+                    category: "Portraits",
+                    location: "SoHo Studio, NY",
+                    url: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=1200&q=85",
+                    camera: "Leica M11 Monochrom",
+                    exif: "50mm f/1.4 • 1/250s • ISO 125"
+                },
+                {
+                    id: 6,
+                    title: "Architectural Linen & Concrete",
+                    category: "Editorial",
+                    location: "Copenhagen, Denmark",
+                    url: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=85",
+                    camera: "Hasselblad X2D 100C",
+                    exif: "55mm f/2.5 • 1/400s • ISO 100"
+                },
+                {
+                    id: 7,
+                    title: "Dunes at Dusk",
+                    category: "Landscapes",
+                    location: "Sossusvlei, Namibia",
+                    url: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=1200&q=85",
+                    camera: "Hasselblad X2D 100C",
+                    exif: "90mm f/5.6 • 1/125s • ISO 64"
+                },
+                {
+                    id: 8,
+                    title: "Candlelight Aperitivo",
+                    category: "Events",
+                    location: "Lake Como, Italy",
+                    url: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=1200&q=85",
+                    camera: "Leica M11",
+                    exif: "35mm f/1.4 • 1/125s • ISO 800"
+                },
+                {
+                    id: 9,
+                    title: "Sculptural Veil",
+                    category: "Editorial",
+                    location: "Palais Royal, Paris",
+                    url: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1200&q=85",
+                    camera: "Contax 645 • Ilford HP5",
+                    exif: "80mm f/2.8 • 1/640s • ISO 400"
+                }
+            ];
+
+            let currentFilter = 'all';
+            let filteredPhotos = [...portfolioItems];
+            let currentLightboxIndex = 0;
+
+            const galleryGrid = document.getElementById('gallery-grid');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+
+            // 2. RENDER GALLERY ITEMS
+            function renderGallery(filter) {
+                currentFilter = filter;
+                filteredPhotos = filter === 'all' 
+                    ? [...portfolioItems] 
+                    : portfolioItems.filter(item => item.category === filter);
+
+                galleryGrid.innerHTML = '';
+
+                filteredPhotos.forEach((photo, index) => {
+                    const card = document.createElement('article');
+                    card.className = 'masonry-item gallery-card group relative rounded-xl overflow-hidden bg-stone cursor-pointer animate-reveal shadow-sm';
+                    card.style.animationDelay = `${index * 60}ms`;
+                    card.setAttribute('tabindex', '0');
+                    card.setAttribute('role', 'button');
+                    card.setAttribute('aria-label', `View ${photo.title} in full screen`);
+
+                    card.innerHTML = `
+                        <img 
+                            src="${photo.url}" 
+                            onerror="this.src='https://placehold.co/800x1000/161616/C5B396?text=${encodeURIComponent(photo.title)}'"
+                            alt="${photo.title} - ${photo.category}" 
+                            loading="lazy"
+                            class="w-full h-auto block object-cover"
+                        >
+                        <div class="absolute inset-0 bg-gradient-to-t from-obsidian/85 via-obsidian/20 to-transparent opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-400 flex flex-col justify-end p-6 text-white">
+                            <span class="text-[10px] uppercase tracking-widest text-champagne mb-1">${photo.category} &bull; ${photo.location}</span>
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-serif text-2xl font-normal">${photo.title}</h3>
+                                <span class="w-9 h-9 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center text-xs">
+                                    <i class="fa-solid fa-expand"></i>
+                                </span>
+                            </div>
+                        </div>
+                    `;
+
+                    // Open Lightbox on Click or Enter Key
+                    card.addEventListener('click', () => openLightbox(index));
+                    card.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            openLightbox(index);
+                        }
+                    });
+
+                    galleryGrid.appendChild(card);
+                });
+            }
+
+            // Initialize Gallery
+            renderGallery('all');
+
+            // Filter Button Handlers
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Update active visual states
+                    filterButtons.forEach(b => {
+                        b.classList.remove('bg-obsidian', 'text-white', 'active');
+                        b.classList.add('bg-stone', 'text-obsidian');
+                    });
+                    btn.classList.remove('bg-stone', 'text-obsidian');
+                    btn.classList.add('bg-obsidian', 'text-white', 'active');
+
+                    renderGallery(btn.dataset.filter);
+                });
+            });
+
+            // 3. INTERACTIVE LIGHTBOX LOGIC
+            const lightboxModal = document.getElementById('lightbox-modal');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxTitle = document.getElementById('lightbox-title');
+            const lightboxCategory = document.getElementById('lightbox-category');
+            const lightboxCamera = document.getElementById('lightbox-camera');
+            const lightboxExif = document.getElementById('lightbox-exif');
+            const lightboxCounter = document.getElementById('lightbox-counter');
+
+            function updateLightboxContent() {
+                const photo = filteredPhotos[currentLightboxIndex];
+                if (!photo) return;
+
+                lightboxImg.style.opacity = '0.3';
+                setTimeout(() => {
+                    lightboxImg.src = photo.url;
+                    lightboxImg.alt = photo.title;
+                    lightboxTitle.textContent = photo.title;
+                    lightboxCategory.textContent = `${photo.category} — ${photo.location}`;
+                    lightboxCamera.innerHTML = `<i class="fa-solid fa-camera mr-1.5 text-champagne"></i>${photo.camera}`;
+                    lightboxExif.textContent = photo.exif;
+                    
+                    const currentNum = String(currentLightboxIndex + 1).padStart(2, '0');
+                    const totalNum = String(filteredPhotos.length).padStart(2, '0');
+                    lightboxCounter.textContent = `${currentNum} / ${totalNum}`;
+                    lightboxImg.style.opacity = '1';
+                }, 140);
+            }
+
+            function openLightbox(index) {
+                currentLightboxIndex = index;
+                updateLightboxContent();
+                lightboxModal.classList.remove('hidden');
+                lightboxModal.classList.add('flex');
+                // Trigger fade-in
+                requestAnimationFrame(() => {
+                    lightboxModal.classList.remove('opacity-0');
+                });
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeLightbox() {
+                lightboxModal.classList.add('opacity-0');
+                setTimeout(() => {
+                    lightboxModal.classList.add('hidden');
+                    lightboxModal.classList.remove('flex');
+                    document.body.style.overflow = '';
+                }, 280);
+            }
+
+            function showNextPhoto() {
+                currentLightboxIndex = (currentLightboxIndex + 1) % filteredPhotos.length;
+                updateLightboxContent();
+            }
+
+            function showPrevPhoto() {
+                currentLightboxIndex = (currentLightboxIndex - 1 + filteredPhotos.length) % filteredPhotos.length;
+                updateLightboxContent();
+            }
+
+            document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+            document.getElementById('lightbox-next').addEventListener('click', showNextPhoto);
+            document.getElementById('lightbox-prev').addEventListener('click', showPrevPhoto);
+
+            // Close on backdrop click
+            lightboxModal.addEventListener('click', (e) => {
+                if (e.target === lightboxModal) closeLightbox();
+            });
+
+            // Keyboard Navigation (Escape, ArrowRight, ArrowLeft)
+            document.addEventListener('keydown', (e) => {
+                if (lightboxModal.classList.contains('hidden')) return;
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowRight') showNextPhoto();
+                if (e.key === 'ArrowLeft') showPrevPhoto();
+            });
+
+            // Touch Swipe Support for Lightbox
+            let touchStartX = 0;
+            lightboxModal.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            lightboxModal.addEventListener('touchend', (e) => {
+                const touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 50) {
+                    diff > 0 ? showNextPhoto() : showPrevPhoto();
+                }
+            }, { passive: true });
+
+            // 4. STICKY NAVIGATION SCROLL BEHAVIOR
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 60) {
+                    navbar.classList.add('bg-obsidian/95', 'backdrop-blur-md', 'py-3.5', 'shadow-lg', 'border-b', 'border-white/10');
+                    navbar.classList.remove('py-5');
+                } else {
+                    navbar.classList.remove('bg-obsidian/95', 'backdrop-blur-md', 'py-3.5', 'shadow-lg', 'border-b', 'border-white/10');
+                    navbar.classList.add('py-5');
+                }
+            });
+
+            // 5. MOBILE MENU DRAWER TOGGLE
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const iconOpen = document.getElementById('menu-icon-open');
+            const iconClose = document.getElementById('menu-icon-close');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+            let isMenuOpen = false;
+
+            function toggleMobileMenu() {
+                isMenuOpen = !isMenuOpen;
+                if (isMenuOpen) {
+                    mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+                    iconOpen.classList.add('hidden');
+                    iconClose.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+                    iconOpen.classList.remove('hidden');
+                    iconClose.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+            mobileLinks.forEach(link => link.addEventListener('click', () => {
+                if (isMenuOpen) toggleMobileMenu();
+            }));
+
+            // 6. PRESELECT SERVICE PACKAGE WHEN CLICKING "BOOK" CTAs
+            const serviceSelect = document.getElementById('service-select');
+            document.querySelectorAll('.book-trigger').forEach(trigger => {
+                trigger.addEventListener('click', () => {
+                    const targetService = trigger.dataset.preselect;
+                    if (targetService && serviceSelect) {
+                        for (let option of serviceSelect.options) {
+                            if (option.value.includes(targetService) || targetService.includes(option.value)) {
+                                serviceSelect.value = option.value;
+                                break;
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Set minimum date on date picker to today
+            const dateInput = document.getElementById('session-date');
+            if (dateInput) {
+                const today = new Date().toISOString().split('T')[0];
+                dateInput.setAttribute('min', today);
+            }
+
+            // 7. BOOKING INQUIRY FORM SUBMISSION & CONFIRMATION
+            const bookingForm = document.getElementById('booking-form');
+            const bookingConfirmation = document.getElementById('booking-confirmation');
+            const confirmationSummary = document.getElementById('confirmation-summary');
+            const resetBookingBtn = document.getElementById('reset-booking-btn');
+
+            bookingForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('client-name').value.trim();
+                const service = serviceSelect.value;
+                const date = dateInput.value;
+
+                confirmationSummary.innerHTML = `
+                    Thank you, <strong class="text-white font-medium">${name}</strong>. Your inquiry for 
+                    <span class="text-champagne">${service}</span> on <span class="text-white">${date}</span> 
+                    has been received. Elena’s studio producer will respond shortly.
+                `;
+
+                bookingForm.classList.add('hidden');
+                bookingConfirmation.classList.remove('hidden');
+            });
+
+            resetBookingBtn.addEventListener('click', () => {
+                bookingForm.reset();
+                bookingConfirmation.classList.add('hidden');
+                bookingForm.classList.remove('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
